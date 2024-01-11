@@ -6,12 +6,12 @@ Name: realtime-tests
 # Numa argument to make:  NUMA=1
 #
 Version: 2.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
 
-ExcludeArch: s390 s390x armv7hl ppc64 ppc64le aarch64 i686
+ExcludeArch: s390 s390x armv7hl ppc64 ppc64le i686
 BuildRequires: make
 BuildRequires: gcc
 BuildRequires: numactl-devel
@@ -78,6 +78,10 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Wed Jul 12 2023 John Kacur <jkacur@redhat.com> - 2.5-2
+- Remove aarch64 from ExcludeArch to allow internal arm builds
+Resolves: rhbz#2222437
+
 * Tue Jan 24 2023 John Kacur <jkacur@redhat.com> - 2.5-1
 - Update to latest rt-tests upstream v2.5
 Resolves: rhbz#2162779
