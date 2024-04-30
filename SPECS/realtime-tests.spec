@@ -5,8 +5,8 @@ Name: realtime-tests
 # BuildRequires: numactl-devel
 # Numa argument to make:  NUMA=1
 #
-Version: 2.5
-Release: 2%{?dist}
+Version: 2.6
+Release: 5%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
@@ -20,6 +20,18 @@ Requires: bash
 Requires: bc
 
 #Patches
+Patch1: rt-tests-Add-missing-SPDX-licenses.patch
+Patch2: rt-tests-Makefile-Restore-support-for-Exuberant-Ctag.patch
+Patch3: rt-tests-Remove-remaining-unnecessary-texts.patch
+Patch4: rt-tests-Fix-warnings.patch
+Patch5: rt-tests-cyclictest-Remove-histogram-totals.patch
+Patch6: rt-tests-cyclictest-Replace-histogram-code-with-libr.patch
+Patch7: rt-tests-cyclicdeadline-Add-histogram-support.patch
+Patch8: rt-tests-cyclics-Fix-json-segfault-when-not-using-hi.patch
+Patch9: rt-tests-cyclicdeadline-Print-the-histogram-regardle.patch
+Patch10: rt-tests-cyclicdeadline-Remove-dead-verbose-code-in-.patch
+Patch11: rt-tests-oslat-should-use-MHz-not-Mhz.patch
+Patch12: rt-tests-oslat-convert-to-nanoseconds-correctly.patch
 
 %description
 realtime-tests is a set of programs that test and measure various components of
@@ -28,6 +40,18 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 
 %prep
 %setup -q -n rt-tests-%{version}
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
 
 %build
 %set_build_flags
@@ -78,6 +102,28 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Mon Feb 05 2024 John Kacur <jkacur@redhat.com> - 2.6-4
+- Fix specfile to apply all patches
+Resolves: RHEL-23909
+
+* Mon Feb 05 2024 John Kacur <jkacur@redhat.com> - 2.6-4
+- oslat: correct spelling of Mhz to MHz
+- oslat: Fix conversion to nanoseconds for 1us bucket
+Resolves: RHEL-23909
+
+* Fri Jan 26 2024 Crystal Wood <crwood@redhat.com> - 2.6-3
+- Fix issues with with using --json without --histogram (both cyclictest and
+  cyclicdeadline), and using --histogram without --quiet in cyclicdeadline.
+Resolves: RHEL-9910
+
+* Thu Jan 11 2024 Crystal Wood <crwood@redhat.com> - 2.6-2
+- cyclicdeadline histogram support
+Resolves: RHEL-9910
+
+* Fri Oct 27 2023 John Kacur <jkacur@redhat.com> - 2.6-1
+- Update to latest rt-tests upstream v2.6
+Resolves: RHEL-7860
+
 * Wed Jul 12 2023 John Kacur <jkacur@redhat.com> - 2.5-2
 - Remove aarch64 from ExcludeArch to allow internal arm builds
 Resolves: rhbz#2222437
