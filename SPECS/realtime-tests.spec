@@ -5,8 +5,8 @@ Name: realtime-tests
 # BuildRequires: numactl-devel
 # Numa argument to make:  NUMA=1
 #
-Version: 2.6
-Release: 5%{?dist}
+Version: 2.7
+Release: 2%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
@@ -20,18 +20,8 @@ Requires: bash
 Requires: bc
 
 #Patches
-Patch1: rt-tests-Add-missing-SPDX-licenses.patch
-Patch2: rt-tests-Makefile-Restore-support-for-Exuberant-Ctag.patch
-Patch3: rt-tests-Remove-remaining-unnecessary-texts.patch
-Patch4: rt-tests-Fix-warnings.patch
-Patch5: rt-tests-cyclictest-Remove-histogram-totals.patch
-Patch6: rt-tests-cyclictest-Replace-histogram-code-with-libr.patch
-Patch7: rt-tests-cyclicdeadline-Add-histogram-support.patch
-Patch8: rt-tests-cyclics-Fix-json-segfault-when-not-using-hi.patch
-Patch9: rt-tests-cyclicdeadline-Print-the-histogram-regardle.patch
-Patch10: rt-tests-cyclicdeadline-Remove-dead-verbose-code-in-.patch
-Patch11: rt-tests-oslat-should-use-MHz-not-Mhz.patch
-Patch12: rt-tests-oslat-convert-to-nanoseconds-correctly.patch
+Patch1: 0001-rt-tests-hackbench-removed-extra-use-of-optind.patch
+Patch2: 0002-rt-tests-hackbench-properly-recognize-when-integer-a.patch
 
 %description
 realtime-tests is a set of programs that test and measure various components of
@@ -41,17 +31,7 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %prep
 %setup -q -n rt-tests-%{version}
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
+%patch2 -p1 
 
 %build
 %set_build_flags
@@ -62,7 +42,7 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 
 %files
 %pycached %{python3_sitelib}/hwlatdetect.py
-%caps(cap_sys_rawio+ep) /usr/bin/cyclictest
+%caps(cap_sys_rawio+ep) %attr(750,-,-) /usr/bin/cyclictest
 %{_bindir}/pi_stress
 %{_bindir}/signaltest
 %{_bindir}/hwlatdetect
@@ -102,6 +82,19 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Thu May 23 2024 Anubhav Shelat <ashelat@redhat.com> - 2.7-2
+- Added a patch to fix -s option in hackbench.
+- Added a patch to prevent the user from erroneously passing negative numbers to hackbench.
+Resolves: RHEL-36746
+
+* Tue May 07 2024 John Kacur <jkacur@redhat.com> - 2.7-1
+- Rebase to upstream rt-tests-2.7
+Resolves: RHEL-30166
+
+* Fri Apr 26 2024 Eder Zulian <ezulian@redhat.com> - 2.6-6
+- Strip o+rx permissions from the cyclictest executable
+Resolves: RHEL-33785
+
 * Mon Feb 05 2024 John Kacur <jkacur@redhat.com> - 2.6-4
 - Fix specfile to apply all patches
 Resolves: RHEL-23909
