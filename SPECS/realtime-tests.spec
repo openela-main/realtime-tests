@@ -5,8 +5,8 @@ Name: realtime-tests
 # BuildRequires: numactl-devel
 # Numa argument to make:  NUMA=1
 #
-Version: 2.7
-Release: 2%{?dist}
+Version: 2.8
+Release: 4%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
@@ -16,12 +16,17 @@ BuildRequires: make
 BuildRequires: gcc
 BuildRequires: numactl-devel
 BuildRequires: python3-devel
+BuildRequires: kernel-headers
+BuildRequires: kernel-tools-libs-devel
 Requires: bash
 Requires: bc
 
-#Patches
-Patch1: 0001-rt-tests-hackbench-removed-extra-use-of-optind.patch
-Patch2: 0002-rt-tests-hackbench-properly-recognize-when-integer-a.patch
+Patch1: 0001-rt-tests-Put-variables-in-test-feature-in-quotes.patch
+Patch2: 0002-rt-tests-Handle-lcpupower-flag-outside-LDFLAGS.patch
+Patch3: Turn-off-Wunused-parameter.patch
+Patch4: Enable-Werror.patch
+Patch5: Remove-unused-parameter-annotations.patch
+Patch6: pip_stress-Add-option-usleep.patch
 
 %description
 realtime-tests is a set of programs that test and measure various components of
@@ -29,9 +34,7 @@ real-time kernel behavior. This package measures timer, signal, and hardware
 latency. It also tests the functioning of priority-inheritance mutexes.
 
 %prep
-%setup -q -n rt-tests-%{version}
-%patch1 -p1
-%patch2 -p1 
+%autosetup -p1 -n rt-tests-%{version}
 
 %build
 %set_build_flags
@@ -82,6 +85,23 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Thu Jan 30 2025 John Kacur <jkacur@redhat.com> - 2.8-4
+- Add a usleep option to pip_stress
+Resolves: RHEL-77110
+
+* Thu Jan 30 2025 John Kacur <jkacur@redhat.com> - 2.8-3
+- Remove unused parameter warning and annotations
+- Add -Werror
+Resolves: RHEL-77108
+
+* Mon Dec 09 2024 Tomas Glozar <tglozar@redhat.com> - 2.8-2
+- Fix building against libcpupower
+Resolves: RHEL-65487
+
+* Fri Nov 29 2024 John Kacur <jkacur@redhat.com> - 2.8-1
+- Rebase to rt-tests-2.8 upstream
+Resolves: RHEL-68658
+
 * Thu May 23 2024 Anubhav Shelat <ashelat@redhat.com> - 2.7-2
 - Added a patch to fix -s option in hackbench.
 - Added a patch to prevent the user from erroneously passing negative numbers to hackbench.
