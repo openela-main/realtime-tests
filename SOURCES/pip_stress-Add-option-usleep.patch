@@ -1,0 +1,81 @@
+From eea8da1647c3f7d26f3aae607475266112ab79b1 Mon Sep 17 00:00:00 2001
+From: Shizhao Chen <shichen@redhat.com>
+Date: Fri, 24 Jan 2025 15:51:57 +0800
+Subject: [PATCH 4/5] rt-tests: pip_stress: Add option --usleep
+
+Different hardwares have different threasholds for usleep_val to
+reliably trigger an prio inversion, add option --usleep to allow
+specifying it at runtime, to facilitate testing of prio inheritance
+on different platforms.
+
+Signed-off-by: Shizhao Chen <shichen@redhat.com>
+Signed-off-by: John Kacur <jkacur@redhat.com>
+---
+ src/pi_tests/pip_stress.8 |  6 +++++-
+ src/pi_tests/pip_stress.c | 10 ++++++++--
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/src/pi_tests/pip_stress.8 b/src/pi_tests/pip_stress.8
+index 0d06dd2215f8..0f65ad1c107b 100644
+--- a/src/pi_tests/pip_stress.8
++++ b/src/pi_tests/pip_stress.8
+@@ -5,7 +5,8 @@
+ .B pip_stress \- Priority Inheritance with processes
+ .SH SYNOPSIS
+ .B pip_stress
+-
++.RB [ \-u|\-\-usleep
++.IR TIME ]
+ .SH DESCRIPTION
+ This program demonstrates the technique of using priority inheritance (PI)
+ mutexes with processes instead of threads.
+@@ -41,6 +42,9 @@ merely increase the time that the low priority process sleeps while
+ holding the lock. (usleep);
+ Also note that you have to run as a user with permission to change
+ scheduling priorities.
++.SH OPTIONS
++.IP "\-u TIME,\-\-usleep=TIME"
++Specify the sleep time in usec of the low priority process. Defaults to 500.
+ .BR
+ .SH AUTHOR
+ pip_stress was written by John Kacur <jkacur at redhat.com>
+diff --git a/src/pi_tests/pip_stress.c b/src/pi_tests/pip_stress.c
+index fb0391bfec0d..9bd225fb155c 100644
+--- a/src/pi_tests/pip_stress.c
++++ b/src/pi_tests/pip_stress.c
+@@ -72,7 +72,9 @@ static void usage(int error)
+ 	printf("pip_stress V %1.2f\n", VERSION);
+ 	printf("Usage:\n"
+ 	       "pip_stress <options>\n"\
+-	       "-h	--help                  Show this help menu.\n"
++	       "-h       --help          Show this help menu.\n"\
++	       "-u TIME  --usleep=TIME   Specify the sleep time in usec of the low priority process.\n"\
++	       "                         Defaults to 500.\n"
+ 	       );
+ 	exit(error);
+ }
+@@ -88,16 +90,20 @@ int main(int argc, char *argv[])
+ 	for (;;) {
+ 		struct option long_options[] = {
+ 			{ "help",	no_argument,		NULL,	'h' },
++			{ "usleep",	required_argument,	NULL,	'u' },
+ 			{ NULL,		0,			NULL,	0 },
+ 		};
+ 
+-		int c = getopt_long(argc, argv, "s:h", long_options, NULL);
++		int c = getopt_long(argc, argv, "hu:", long_options, NULL);
+ 		if (c == -1)
+ 			break;
+ 		switch (c) {
+ 		case 'h':
+ 			usage(0);
+ 			break;
++		case 'u':
++			usleep_val = strtoul(optarg, NULL, 10);
++			break;
+ 		default:
+ 			usage(1);
+ 			break;
+-- 
+2.48.1
+
