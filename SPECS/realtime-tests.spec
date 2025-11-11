@@ -5,8 +5,8 @@ Name: realtime-tests
 # BuildRequires: numactl-devel
 # Numa argument to make:  NUMA=1
 #
-Version: 2.8
-Release: 4%{?dist}
+Version: 2.9
+Release: 1%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
@@ -20,14 +20,6 @@ BuildRequires: kernel-headers
 BuildRequires: kernel-tools-libs-devel
 Requires: bash
 Requires: bc
-
-Patch1: 0001-rt-tests-Put-variables-in-test-feature-in-quotes.patch
-Patch2: 0002-rt-tests-Handle-lcpupower-flag-outside-LDFLAGS.patch
-Patch3: Turn-off-Wunused-parameter.patch
-Patch4: Enable-Werror.patch
-Patch5: Remove-unused-parameter-annotations.patch
-Patch6: pip_stress-Add-option-usleep.patch
-
 %description
 realtime-tests is a set of programs that test and measure various components of
 real-time kernel behavior. This package measures timer, signal, and hardware
@@ -85,6 +77,18 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Wed Jul 9 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.9-1
+- Rebased to latest upstream version
+- Dropped previously applied patches
+- Cleaned up spec file
+Resolves: RHEL-86704
+
+* Thu Jun 26 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.8-5
+-  Added patch Fix-rt-tests-build-with-glibc-2.41.patch
+-  Added patch Revert-Fix-rt-tests-build-with-glibc-2.41.patch
+-  Added patch sched_attr-Do-not-define-for-glibc-2.41.patch
+Resolves: RHEL-88469
+
 * Thu Jan 30 2025 John Kacur <jkacur@redhat.com> - 2.8-4
 - Add a usleep option to pip_stress
 Resolves: RHEL-77110
