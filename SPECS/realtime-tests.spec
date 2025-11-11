@@ -1,7 +1,7 @@
 Name: realtime-tests
 Summary: Programs that test various rt-features
-Version: 2.8
-Release: 5%{?dist}
+Version: 2.9
+Release: 1%{?dist}
 License: GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LGPL-2.1-or-later
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
 Source0: https://www.kernel.org/pub/linux/utils/rt-tests/rt-tests-%{version}.tar.xz
@@ -17,13 +17,6 @@ BuildRequires: kernel-tools-libs-devel
 %endif
 Requires: bash
 Requires: bc
-
-Patch1: 0001-rt-tests-Put-variables-in-test-feature-in-quotes.patch
-Patch2: 0002-rt-tests-Handle-lcpupower-flag-outside-LDFLAGS.patch
-Patch3: Turn-off-Wunused-parameter.patch
-Patch4: Enable-Werror.patch
-Patch5: Remove-unused-parameter-annotations.patch
-Patch6: pip_stress-Add-option-usleep.patch
 
 %description
 realtime-tests is a set of programs that test and measure various components of
@@ -82,6 +75,22 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Thu Jul 10 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.9-1
+- Rebased to latest upstream version
+- Dropped previously applied patches
+- Cleaned up spec file
+Resolves: RHEL-86705
+
+* Fri Jun 27 2025 John Kacur <jkacur@redhat.com> - 2.8-6
+- Bump the release number
+Resolves: RHEL-88470
+
+* Fri Jun 27 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.8-5
+- Added patch Fix-rt-tests-build-with-glibc-2.41.patch
+- Added patch Revert-Fix-rt-tests-build-with-glibc-2.41.patch
+- Added patch sched_attr-Do-not-define-for-glibc-2.41.patch
+Resolves: RHEL-88470
+
 * Thu Jan 30 2025 John Kacur <jkacur@redhat.com> - 2.8-5
 - Add a usleep option to pip_stress
 Resolves: RHEL-77111
