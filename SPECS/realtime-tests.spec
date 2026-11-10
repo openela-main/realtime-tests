@@ -5,7 +5,7 @@ Name: realtime-tests
 # BuildRequires: numactl-devel
 # Numa argument to make:  NUMA=1
 #
-Version: 2.9
+Version: 2.10
 Release: 1%{?dist}
 License: GPLv2
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
@@ -20,6 +20,12 @@ BuildRequires: kernel-headers
 BuildRequires: kernel-tools-libs-devel
 Requires: bash
 Requires: bc
+
+# Patches
+Patch0: rt-tests-hwlatdetect-Add-timestamp-delta.patch
+Patch1: cyclictest-fix-growing-shm-stat-file.patch
+Patch2: Makefile-Use-relative-symlinks-for-Python-scripts.patch
+
 %description
 realtime-tests is a set of programs that test and measure various components of
 real-time kernel behavior. This package measures timer, signal, and hardware
@@ -77,6 +83,11 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Wed Apr 01 2026 John Kacur <jkacur@redhat.com> - 2.10-1
+- Rebase realtime-tests to the latest upstream
+- Added 3 patches and updated spec file
+Resolves: RHEL-144703
+
 * Wed Jul 9 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.9-1
 - Rebased to latest upstream version
 - Dropped previously applied patches
