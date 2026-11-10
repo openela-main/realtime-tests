@@ -1,6 +1,6 @@
 Name: realtime-tests
 Summary: Programs that test various rt-features
-Version: 2.9
+Version: 2.10
 Release: 1%{?dist}
 License: GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LGPL-2.1-or-later
 URL: https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
@@ -17,6 +17,11 @@ BuildRequires: kernel-tools-libs-devel
 %endif
 Requires: bash
 Requires: bc
+
+# Patches
+Patch0: rt-tests-hwlatdetect-Add-timestamp-delta.patch
+Patch1: cyclictest-fix-growing-shm-stat-file.patch
+Patch2: Makefile-Use-relative-symlinks-for-Python-scripts.patch
 
 %description
 realtime-tests is a set of programs that test and measure various components of
@@ -75,6 +80,11 @@ latency. It also tests the functioning of priority-inheritance mutexes.
 %{_mandir}/man8/determine_maximum_mpps.8.*
 
 %changelog
+* Wed Apr 01 2026 John Kacur <jkacur@redhat.com> - 2.10-1
+- Rebase realtime-tests to the latest upstream
+- Added 3 patches and updated spec file
+Resolves: RHEL-144701
+
 * Thu Jul 10 2025 Tyonnchie Berry <tyberry@redhat.com> - 2.9-1
 - Rebased to latest upstream version
 - Dropped previously applied patches
